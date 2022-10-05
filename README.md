@@ -1,2 +1,3 @@
-Created for the justinburrill/supergamingconsole project
+Created for the justinburrill/supergamingconsole project. 
+
 Note: This code sucks
