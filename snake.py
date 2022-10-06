@@ -21,7 +21,8 @@ class Globe():
         self.death = False
         self.frozen = True
         self.snakeLength = 1
-        self.screenUpdateDelay = 400
+        self.screenUpdateDelay = 300
+        self.moveQueueLength = 2
         self.apple = []  # x, y for the apple
         self.lastmove = [0, 0]
 
@@ -38,7 +39,7 @@ def popSnake():
 def controlSnake(x, y):
     # print(f"input {x}, {y}")
     
-    if len(moveQueue) < 3:
+    if len(moveQueue) < globe.moveQueueLength:
         moveQueue.append([x, y])
         print("moveQueue:\n" + str(moveQueue))
         # print(f"Moving {[x, y]}")
@@ -63,7 +64,7 @@ def nextSnake(move):
     # print("snake:\n" + str(snake))
     x = move[0]
     y = move[1]
-    # print(f"moving {x}, {y}")
+    print(f"moving {x}, {y}")
     
     if globe.lastmove[0] + x == 0 and globe.lastmove[1] + y == 0:
         # can't do a 180
@@ -115,7 +116,7 @@ def loop():
     if (len(moveQueue) > 0):
         nextSnake(moveQueue[0])
         # Remove that move from the queue
-        moveQueue.pop(-1)
+        moveQueue.pop(0)
     else:
         nextSnake([-1, -1])
     if globe.frozen or globe.death:
@@ -137,6 +138,8 @@ def rect(x, y, c):
 
 
 def draw():
+    # if globe.death:
+
     # fill squares with red for apple, green for snake, and black for empty
     for x in range(screensize):
         for y in range(screensize):
