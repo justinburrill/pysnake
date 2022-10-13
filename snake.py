@@ -41,7 +41,7 @@ def controlSnake(x, y):
     
     if len(moveQueue) < globe.moveQueueLength:
         moveQueue.append([x, y])
-        print("moveQueue:\n" + str(moveQueue))
+        # print("moveQueue:\n" + str(moveQueue))
         # print(f"Moving {[x, y]}")
 
     if (globe.frozen):
@@ -59,12 +59,21 @@ root.bind("<Left>", lambda event, x=-1, y=0:
 root.bind("<Right>", lambda event, x=1, y=0:
           controlSnake(x, y))
 
+def checkImpact(x, y):
+    # Check if you hit a wall
+    if x > screensize-1 or x < 0 or y > screensize-1 or y < 0:
+        return True
+    elif [x,y] in snake:
+        return True
+    else: return False
+
+
 
 def nextSnake(move):
     # print("snake:\n" + str(snake))
     x = move[0]
     y = move[1]
-    print(f"moving {x}, {y}")
+    # print(f"moving {x}, {y}")
     
     if globe.lastmove[0] + x == 0 and globe.lastmove[1] + y == 0:
         # can't do a 180
@@ -86,12 +95,14 @@ def nextSnake(move):
         # print(f"y = {snake[-1][1]} + {globe.lastmove[1]}")
 
     # print(f"moving {x}, {y}")
-    # Check if you hit a wall
-    if x > screensize-1 or x < 0 or y > screensize-1 or y < 0:
+    
+    if checkImpact(x, y):
+        # dead 💀
         killSnake()
     else:
         # make next body part of snake
         snake.append([x, y])
+
 
 
 def newApple():
