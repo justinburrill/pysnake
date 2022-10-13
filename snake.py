@@ -5,7 +5,7 @@ root = Tk()
 screensize = 15 # odd number works nicely, >= 5
 squaresize = 50 # pixel size of each square
 root.geometry(f"{screensize*squaresize}x{screensize*squaresize}")
-root.title("snake lol")
+root.title("Snake")
 # Create canvas
 _canvas = Canvas(root, height=screensize*squaresize,
                  width=screensize*squaresize)
