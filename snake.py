@@ -12,12 +12,12 @@ _canvas = Canvas(root, height=screensize*squaresize,
 _canvas.pack()
 
 
-snake = []  # list of [x,y] for snake body parts
-moveQueue = []  # so when multiple inputs are pressed quickly, they can queue up
 
 
 class Globe():
     def __init__(self):
+        self.snake = []  # list of [x,y] for snake body parts
+        self.moveQueue = []  # so when multiple inputs are pressed quickly, they can queue up
         self.death = False
         self.frozen = True
         self.snakeLength = 1
@@ -32,15 +32,15 @@ globe = Globe()
 
 
 def popSnake():
-    # get of end of snake when moving to the next spot
-    snake.pop(0)
+    # get of end of globe.snake when moving to the next spot
+    globe.snake.pop(0)
 
 
 def controlSnake(x, y):
     # print(f"input {x}, {y}")
     
-    if len(moveQueue) < globe.moveQueueLength:
-        moveQueue.append([x, y])
+    if len(globe.moveQueue) < globe.moveQueueLength:
+        globe.moveQueue.append([x, y])
         # print("moveQueue:\n" + str(moveQueue))
         # print(f"Moving {[x, y]}")
 
@@ -63,7 +63,7 @@ def checkImpact(x, y):
     # Check if you hit a wall
     if x > screensize-1 or x < 0 or y > screensize-1 or y < 0:
         return True
-    elif [x,y] in snake:
+    elif [x,y] in globe.snake:
         return True
     else: return False
 
@@ -86,12 +86,12 @@ def nextSnake(move):
         # print(f"globe.lastmove x = {x}")
         globe.lastmove[1] = y
         # print(f"globe.lastmove y = {y}")
-        x = snake[-1][0] + x
-        y = snake[-1][1] + y
+        x = globe.snake[-1][0] + x
+        y = globe.snake[-1][1] + y
     else: # lastmove
-        x = snake[-1][0] + globe.lastmove[0]
+        x = globe.snake[-1][0] + globe.lastmove[0]
         # print(f"x = {snake[-1][0]} + {globe.lastmove[0]}")
-        y = snake[-1][1] + globe.lastmove[1]
+        y = globe.snake[-1][1] + globe.lastmove[1]
         # print(f"y = {snake[-1][1]} + {globe.lastmove[1]}")
 
     # print(f"moving {x}, {y}")
@@ -101,7 +101,7 @@ def nextSnake(move):
         killSnake()
     else:
         # make next body part of snake
-        snake.append([x, y])
+        globe.snake.append([x, y])
 
 
 
@@ -109,25 +109,25 @@ def newApple():
     # get a new random spot for the apple
     x = random.randrange(0, 8)
     y = random.randrange(0, 8)
-    if [x, y] in snake:
+    if [x, y] in globe.snake:
         newApple()
     else:
         globe.apple = [x, y]
 
 
 def detectApple():
-    if globe.apple == snake[-1]:
-        snake.insert(0,snake[0]) 
+    if globe.apple == globe.snake[-1]:
+        globe.snake.insert(0, globe.snake[0]) 
         newApple()
         globe.snakeLength += 1
         # print(f"snakeLength: {globe.snakeLength}")
 
 
 def loop():
-    if (len(moveQueue) > 0):
-        nextSnake(moveQueue[0])
+    if (len(globe.moveQueue) > 0):
+        nextSnake(globe.moveQueue[0])
         # Remove that move from the queue
-        moveQueue.pop(0)
+        globe.moveQueue.pop(0)
     else:
         nextSnake([-1, -1])
     if globe.frozen or globe.death:
@@ -155,9 +155,9 @@ def draw():
     for x in range(screensize):
         for y in range(screensize):
 
-            if [x, y] in snake:
+            if [x, y] in globe.snake:
                 rect(x, y, "green")
-                if [x, y] == snake[-1]: # head is a different colour
+                if [x, y] == globe.snake[-1]: # head is a different colour
                     rect(x, y, "#00d500")  
                 
 
@@ -181,8 +181,9 @@ def resetGame():
     globe.death = False
 
     # Reset positions
-    snake.clear()
-    snake.append([1, int(screensize/2)])
+    globe.snake.clear()
+    globe.moveQueue.clear()
+    globe.snake.append([1, int(screensize/2)])
     globe.apple = [screensize-2, int(screensize/2)]
     globe.lastmove = [0,0]
 
