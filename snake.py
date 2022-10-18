@@ -2,13 +2,20 @@ from tkinter import *
 import random
 # Initialize window
 root = Tk()
-screensize = 15 # odd number works nicely, >= 5
-squaresize = 50 # pixel size of each square
-root.geometry(f"{screensize*squaresize}x{screensize*squaresize}")
+
+WINRES = [1280, 1024]
+winwidth = WINRES[0]
+winheight = WINRES[1]
+
+squarecount = 15 # odd number works nicely, >= 5
+squarewidth = winwidth/squarecount # pixel size of each square
+squareheight = winheight/squarecount
+
+root.geometry(f"{winwidth}x{winheight}")
 root.title("Snake")
 # Create canvas
-_canvas = Canvas(root, height=screensize*squaresize,
-                 width=screensize*squaresize)
+_canvas = Canvas(root, height=squarecount*squareheight,
+                 width=squarecount*squarewidth)
 _canvas.pack()
 
 
@@ -61,7 +68,7 @@ root.bind("<Right>", lambda event, x=1, y=0:
 
 def checkImpact(x, y):
     # Check if you hit a wall
-    if x > screensize-1 or x < 0 or y > screensize-1 or y < 0:
+    if x > squarecount-1 or x < 0 or y > squarecount-1 or y < 0:
         return True
     elif [x,y] in globe.snake:
         return True
@@ -145,15 +152,15 @@ def killSnake():
 
 def rect(x, y, c):
     _canvas.create_rectangle(
-                    50*x, 50*y, 50*(x+1), 50*(y+1), fill=c, outline=c)
+                    squarewidth*x, squareheight*y, squarewidth*(x+1), squareheight*(y+1), fill=c, outline=c)
 
 
 def draw():
     # if globe.death:
 
     # fill squares with red for apple, green for snake, and black for empty
-    for x in range(screensize):
-        for y in range(screensize):
+    for x in range(squarecount):
+        for y in range(squarecount):
 
             if [x, y] in globe.snake:
                 rect(x, y, "green")
@@ -183,8 +190,8 @@ def resetGame():
     # Reset positions
     globe.snake.clear()
     globe.moveQueue.clear()
-    globe.snake.append([1, int(screensize/2)])
-    globe.apple = [screensize-2, int(screensize/2)]
+    globe.snake.append([1, int(squarecount/2)])
+    globe.apple = [squarecount-2, int(squarecount/2)]
     globe.lastmove = [0,0]
 
     globe.death = False
