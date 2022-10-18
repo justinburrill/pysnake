@@ -106,7 +106,7 @@ def nextSnake(move):
 
 
 def newApple():
-    # get a new random spot for the apple
+    # get a new  spot for the apple
     x = random.randrange(0, 8)
     y = random.randrange(0, 8)
     if [x, y] in globe.snake:
@@ -158,7 +158,7 @@ def draw():
             if [x, y] in globe.snake:
                 rect(x, y, "green")
                 if [x, y] == globe.snake[-1]: # head is a different colour
-                    rect(x, y, "#00d500")  
+                    rect(x, y, "#00d500")
                 
 
             elif [x, y] == globe.apple:
