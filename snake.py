@@ -3,7 +3,7 @@ import random
 # Initialize window
 root = Tk()
 
-WINRES = [1280, 1024]
+WINRES = [1440, 900]
 winwidth = WINRES[0]
 winheight = WINRES[1]
 
