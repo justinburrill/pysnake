@@ -34,7 +34,6 @@ class Globe():
         self.lastmove = [0, 0]
 
 
-
 globe = Globe()
 
 
@@ -77,16 +76,18 @@ def checkImpact(x, y):
 
 
 def nextSnake(move):
-    # print("snake:\n" + str(snake))
+    print(f"snake:\n{globe.snake}")
     x = move[0]
     y = move[1]
-    # print(f"moving {x}, {y}")
+    print(f"moving {x}, {y}")
     
     if globe.lastmove[0] + x == 0 and globe.lastmove[1] + y == 0:
         # can't do a 180
         # print("180 turn blocked")
-        x = -1
-        y = -1
+        # if globe.moveQueue[0]
+            x = -1
+            y = -1
+
 
     if [x,y] != [-1,-1]: # new move
         globe.lastmove[0] = x
@@ -105,6 +106,7 @@ def nextSnake(move):
     
     if checkImpact(x, y):
         # dead 💀
+        # print(f"impact: movex:{x} movey:{y}")
         killSnake()
     else:
         # make next body part of snake
@@ -131,6 +133,8 @@ def detectApple():
 
 
 def loop():
+    print(f"moveQueue:\n{str(globe.moveQueue)}")
+
     if (len(globe.moveQueue) > 0):
         nextSnake(globe.moveQueue[0])
         # Remove that move from the queue
