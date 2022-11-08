@@ -77,10 +77,10 @@ def checkImpact(x, y):
 
 
 def nextSnake(move):
-    print(f"snake:\n{globe.snake}")
+    # print(f"snake:\n{globe.snake}")
     x = move[0]
     y = move[1]
-    print(f"moving {x}, {y}")
+    # print(f"moving {x}, {y}")
     
     if globe.lastmove[0] + x == 0 and globe.lastmove[1] + y == 0:
         # can't do a 180
@@ -134,7 +134,7 @@ def detectApple():
 
 
 def loop():
-    print(f"moveQueue:\n{str(globe.moveQueue)}")
+    # print(f"moveQueue:\n{str(globe.moveQueue)}")
 
     if (len(globe.moveQueue) > 0):
         nextSnake(globe.moveQueue[0])
