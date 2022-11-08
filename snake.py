@@ -7,15 +7,16 @@ WINRES = [1440, 900]
 winwidth = WINRES[0]
 winheight = WINRES[1]
 
-squarecount = 15 # odd number works nicely, >= 5
-squarewidth = winwidth/squarecount # pixel size of each square
-squareheight = winheight/squarecount
+squarecountx = 17 # odd number works nicely, >= 5
+squarecounty = 15 # odd number works nicely, >= 5
+squarewidth = winwidth/squarecountx # pixel size of each square
+squareheight = winheight/squarecounty
 
 root.geometry(f"{winwidth}x{winheight}")
 root.title("Snake")
 # Create canvas
-_canvas = Canvas(root, height=squarecount*squareheight,
-                 width=squarecount*squarewidth)
+_canvas = Canvas(root, height=squarecounty*squareheight,
+                 width=squarecountx*squarewidth)
 _canvas.pack()
 
 
@@ -67,7 +68,7 @@ root.bind("<Right>", lambda event, x=1, y=0:
 
 def checkImpact(x, y):
     # Check if you hit a wall
-    if x > squarecount-1 or x < 0 or y > squarecount-1 or y < 0:
+    if x > squarecountx-1 or x < 0 or y > squarecounty-1 or y < 0:
         return True
     elif [x,y] in globe.snake:
         return True
@@ -163,8 +164,8 @@ def draw():
     # if globe.death:
 
     # fill squares with red for apple, green for snake, and black for empty
-    for x in range(squarecount):
-        for y in range(squarecount):
+    for x in range(squarecountx):
+        for y in range(squarecounty):
 
             if [x, y] in globe.snake:
                 rect(x, y, "green")
@@ -194,8 +195,8 @@ def resetGame():
     # Reset positions
     globe.snake.clear()
     globe.moveQueue.clear()
-    globe.snake.append([1, int(squarecount/2)])
-    globe.apple = [squarecount-2, int(squarecount/2)]
+    globe.snake.append([1, int(squarecounty/2)])
+    globe.apple = [squarecountx-2, int(squarecounty/2)]
     globe.lastmove = [0,0]
 
     globe.death = False
