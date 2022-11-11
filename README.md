@@ -1,5 +1,2 @@
-Created for the justinburrill/supergamingconsole project. 
-
-Note: This code sucks
-
-as of 8/11, this is further updated in the main project
+Snake in the snake language.
+Has move queueing which is really cool
