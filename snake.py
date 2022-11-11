@@ -1,19 +1,16 @@
 from tkinter import *
 import random
-import sys
-sys.path.insert(0, '..y/util_package/')
-from util_package import getres
 
 # Initialize window
 root = Tk()
 
-WINRES = getres()
+WINRES = [800, 800]
 winwidth = WINRES[0]
 winheight = WINRES[1]
 
-squarecountx = 17 # odd number works nicely, >= 5
-squarecounty = 15 # odd number works nicely, >= 5
-squarewidth = winwidth/squarecountx # pixel size of each square
+squarecountx = 15
+squarecounty = 15
+squarewidth = winwidth/squarecountx  # pixel size of each square
 squareheight = winheight/squarecounty
 
 root.geometry(f"{winwidth}x{winheight}")
@@ -24,8 +21,6 @@ _canvas = Canvas(root, height=squarecounty*squareheight,
 _canvas.pack()
 
 
-
-
 class Globe():
     def __init__(self):
         self.snake = []  # list of [x,y] for snake body parts
@@ -33,7 +28,7 @@ class Globe():
         self.death = False
         self.frozen = True
         self.snakeLength = 1
-        self.screenUpdateDelay = 300
+        self.screenUpdateDelay = 400
         self.moveQueueLength = 2
         self.apple = []  # x, y for the apple
         self.lastmove = [0, 0]
@@ -49,11 +44,13 @@ def popSnake():
 
 def controlSnake(x, y):
     # print(f"input {x}, {y}")
-    
+
     if len(globe.moveQueue) < globe.moveQueueLength:
         globe.moveQueue.append([x, y])
         # print("moveQueue:\n" + str(moveQueue))
         # print(f"Moving {[x, y]}")
+    else:
+        globe.moveQueue[-1] = [x, y]
 
     if (globe.frozen):
         globe.frozen = False
@@ -70,45 +67,45 @@ root.bind("<Left>", lambda event, x=-1, y=0:
 root.bind("<Right>", lambda event, x=1, y=0:
           controlSnake(x, y))
 
+
 def checkImpact(x, y):
     # Check if you hit a wall
     if x > squarecountx-1 or x < 0 or y > squarecounty-1 or y < 0:
         return True
-    elif [x,y] in globe.snake:
+    elif [x, y] in globe.snake:
         return True
-    else: return False
-
+    else:
+        return False
 
 
 def nextSnake(move):
     # print(f"snake:\n{globe.snake}")
     x = move[0]
     y = move[1]
-    # print(f"moving {x}, {y}")
-    
+    print(f"moving {x}, {y}")
+
     if globe.lastmove[0] + x == 0 and globe.lastmove[1] + y == 0:
         # can't do a 180
         # print("180 turn blocked")
         # if globe.moveQueue[0]
-            x = -1
-            y = -1
+        x = -1
+        y = -1
 
-
-    if [x,y] != [-1,-1]: # new move
+    if [x, y] != [-1, -1]:  # new move
         globe.lastmove[0] = x
         # print(f"globe.lastmove x = {x}")
         globe.lastmove[1] = y
         # print(f"globe.lastmove y = {y}")
         x = globe.snake[-1][0] + x
         y = globe.snake[-1][1] + y
-    else: # lastmove
+    else:  # lastmove
         x = globe.snake[-1][0] + globe.lastmove[0]
         # print(f"x = {snake[-1][0]} + {globe.lastmove[0]}")
         y = globe.snake[-1][1] + globe.lastmove[1]
         # print(f"y = {snake[-1][1]} + {globe.lastmove[1]}")
 
     # print(f"moving {x}, {y}")
-    
+
     if checkImpact(x, y):
         # dead 💀
         # print(f"impact: movex:{x} movey:{y}")
@@ -116,7 +113,6 @@ def nextSnake(move):
     else:
         # make next body part of snake
         globe.snake.append([x, y])
-
 
 
 def newApple():
@@ -131,14 +127,14 @@ def newApple():
 
 def detectApple():
     if globe.apple == globe.snake[-1]:
-        globe.snake.insert(0, globe.snake[0]) 
+        globe.snake.insert(0, globe.snake[0])
         newApple()
         globe.snakeLength += 1
         # print(f"snakeLength: {globe.snakeLength}")
 
 
 def loop():
-    # print(f"moveQueue:\n{str(globe.moveQueue)}")
+    print(f"moveQueue:\n{str(globe.moveQueue)}")
 
     if (len(globe.moveQueue) > 0):
         nextSnake(globe.moveQueue[0])
@@ -159,9 +155,10 @@ def killSnake():
     draw()
     root.after(3000, resetGame)
 
+
 def rect(x, y, c):
     _canvas.create_rectangle(
-                    squarewidth*x, squareheight*y, squarewidth*(x+1), squareheight*(y+1), fill=c, outline=c)
+        squarewidth*x, squareheight*y, squarewidth*(x+1), squareheight*(y+1), fill=c, outline=c)
 
 
 def draw():
@@ -173,9 +170,8 @@ def draw():
 
             if [x, y] in globe.snake:
                 rect(x, y, "green")
-                if [x, y] == globe.snake[-1]: # head is a different colour
+                if [x, y] == globe.snake[-1]:  # head is a different colour
                     rect(x, y, "#00d500")
-                
 
             elif [x, y] == globe.apple:
                 rect(x, y, "red")
@@ -187,9 +183,7 @@ def draw():
                     continue
                 # _canvas.create_rectangle(
                 #     50*x, 50*y, 50*(x+1), 50*(y+1), fill="black")
-                rect(x,y,"black")
-
-            
+                rect(x, y, "black")
 
 
 # starting spots
@@ -201,7 +195,7 @@ def resetGame():
     globe.moveQueue.clear()
     globe.snake.append([1, int(squarecounty/2)])
     globe.apple = [squarecountx-2, int(squarecounty/2)]
-    globe.lastmove = [0,0]
+    globe.lastmove = [0, 0]
 
     globe.death = False
     globe.frozen = True
