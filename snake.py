@@ -1,6 +1,11 @@
 from tkinter import *
 import random
 
+# for gamepad
+from inputs import get_gamepad
+import math
+import threading
+
 # Initialize window
 root = Tk()
 
@@ -28,7 +33,7 @@ class Globe():
         self.death = False
         self.frozen = True
         self.snakeLength = 1
-        self.screenUpdateDelay = 400
+        self.screenUpdateDelay = 200
         self.moveQueueLength = 2
         self.apple = []  # x, y for the apple
         self.lastmove = [0, 0]
@@ -43,7 +48,7 @@ def popSnake():
 
 
 def controlSnake(x, y):
-    # print(f"input {x}, {y}")
+    print(f"input {x}, {y}")
 
     if len(globe.moveQueue) < globe.moveQueueLength:
         globe.moveQueue.append([x, y])
@@ -82,7 +87,7 @@ def nextSnake(move):
     # print(f"snake:\n{globe.snake}")
     x = move[0]
     y = move[1]
-    print(f"moving {x}, {y}")
+    # print(f"moving {x}, {y}")
 
     if globe.lastmove[0] + x == 0 and globe.lastmove[1] + y == 0:
         # can't do a 180
@@ -134,7 +139,7 @@ def detectApple():
 
 
 def loop():
-    print(f"moveQueue:\n{str(globe.moveQueue)}")
+    # print(f"moveQueue:\n{str(globe.moveQueue)}")
 
     if (len(globe.moveQueue) > 0):
         nextSnake(globe.moveQueue[0])
@@ -204,6 +209,63 @@ def resetGame():
 
 # Set everything up
 resetGame()
+
+
+class XboxController(object):
+    MAX_JOY_VAL = math.pow(2, 15)
+
+    def __init__(self):
+        self.A = 0
+        self.X = 0
+        self.Y = 0
+        self.B = 0
+
+        self._monitor_thread = threading.Thread(
+            target=self._monitor_controller, args=())
+        self._monitor_thread.daemon = True
+        self._monitor_thread.start()
+
+    def read(self):  # return the buttons/triggers that you care about in this methode
+        u = self.Y
+        d = self.A
+        l = self.X
+        r = self.B
+        return [u, d, l, r]
+
+    def _monitor_controller(self):
+        while True:
+            events = get_gamepad()
+            for event in events:
+                if event.code == 'BTN_SOUTH':
+                    self.A = event.state
+                elif event.code == 'BTN_NORTH':
+                    self.Y = event.state  # previously switched with X
+                elif event.code == 'BTN_WEST':
+                    self.X = event.state  # previously switched with Y
+                elif event.code == 'BTN_EAST':
+                    self.B = event.state
+
+
+class ControllerController:
+    def check(self):
+        if __name__ == '__main__':
+            joy = XboxController()
+            while True:
+                info = joy.read()
+                x = info[3]-info[2]
+                y = info[1]-info[0]
+                print(f"x: {x} y: {y}")
+                if abs(x+y) == 1:  # single non-zero input
+                    controlSnake(x, y)
+
+    def __init__(self):
+        # start a thread that checks input from the controller
+        t = threading.Thread(target=self.check)
+        t.start()
+
+
+ControllerController()
+
 
 # Needs to be here for tkinter
 root.mainloop()
